@@ -110,7 +110,7 @@ Please read the notes on [numbers](../CAS/Numbers.md#Floats).
 
 ### Insert Stars ### {#Insert_Stars}
 
-There are three options.
+There are six options.
 
 * Don't insert stars:  This does not insert `*` characters automatically into any patterns identified by Strict Syntax as needing them.  Strict Syntax is true and there are any pattern identified the result will be an invalid expression.
 * Insert `*`s for implied multiplication.  If any patterns identified by Strict Syntax as needing `*`s then they will automatically be inserted into the expression quietly.
@@ -122,6 +122,14 @@ The above two conditions are in conflict: we can't have it both ways.  What woul
 
 1. as \( (x\cdot e)^x\) if we assume single character variable names, and
 2. as \( xe^x\) if we just "Insert `*`s for implied multiplication".  The absence of the dot here is key.
+
+There are also additional options to insert multiplication signs for spaces.
+
+* Insert stars for spaces only
+* Insert stars for implied multiplication and for spaces
+* Insert stars assuming single-character variable names and for spaces
+
+If a space is taken for multuplication what should we do with \(sin\ x\)?  Currently this is transformed to \(\sin \times x\) and then rejected as invalid as you can't multiply the function name by its argument.  Use these latter options with caution: in the long run students are likely to need to use a strict syntax with machines, and letting them use spaces now might be a diservice.
 
 ### Syntax Hint {#Syntax_Hint}
 

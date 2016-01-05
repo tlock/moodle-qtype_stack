@@ -500,6 +500,13 @@ class stack_cas_casstring {
      */
     private static $disallowedfinalchars = '/+*^£#~=,_&`¬;:$-';
 
+    /**
+     * @var all the permitted patterns in which spaces occur.  Simple find and replace.
+     */
+    private static $spacepatterns = array(
+            ' or ' => 'STACKOR', ' and ' => 'STACKAND', 'not ' => 'STACKNOT',
+    );
+
     public function __construct($rawstring) {
         $this->rawcasstring   = $rawstring;
         $this->answernote = array();
@@ -582,21 +589,6 @@ class stack_cas_casstring {
             }
         }
 
-        // If student, check for spaces between letters or numbers in expressions.
-        if ($security != 't') {
-            $pat = "|([A-Za-z0-9\(\)]+) ([A-Za-z0-9\(\)]+)|";
-            // Special case - allow students to type in expressions such as "x>1 and x<4".
-            $cmdmod = str_replace(' or ', '', $cmd);
-            $cmdmod = str_replace(' and ', '', $cmdmod);
-            $cmdmod = str_replace('not ', '', $cmdmod);
-            if (preg_match($pat, $cmdmod)) {
-                $cmds = str_replace(' ', '<font color="red">_</font>', $this->strings_replace($cmd, $strings));
-                $this->add_error(stack_string('stackCas_spaces', array('expr' => stack_maxima_format_casstring($cmds))));
-                $this->answernote[] = 'spaces';
-                $this->valid = false;
-            }
-        }
-
         // Check for % signs, allow %pi %e, %i, %gamma, %phi but nothing else.
         if (strstr($cmd, '%') !== false) {
             $cmdl = strtolower($cmd);
@@ -675,6 +667,8 @@ class stack_cas_casstring {
                 $this->valid = false;
             }
         }
+
+        $cmd = $this->check_spaces($security, $syntax, $insertstars);
 
         if ($security == 's') {
             // Check for bad looking trig functions, e.g. sin^2(x) or tan*2*x
@@ -806,6 +800,63 @@ class stack_cas_casstring {
     }
 
     /**
+     * Checks for spaces in students' expressions.  Is not applied to teachers.
+     *
+     * @return bool|string true if no missing *s, false if missing stars but automatically added
+     * If stack is set to not add stars automatically, a string indicating the missing stars is returned.
+     */
+    private function check_spaces($security, $syntax, $insertstars) {
+
+        $cmd = $this->rawcasstring;
+
+        // Remove the contents of any strings, so we don't test for spaces within them.
+        list ($cmd, $strings) = $this->strings_remove($cmd);
+
+        // Always replace multiple spaces with a single space.
+        $cmd = trim($cmd);
+        $cmd = preg_replace('!\s+!', ' ', $cmd);
+
+        if ($security == 't') {
+            return $cmd;
+        }
+
+        // Special cases: allow students to type in expressions such as "x>1 and x<4".
+        foreach (self::$spacepatterns as $key => $pat) {
+            $cmd = str_replace($key, $pat, $cmd);
+        }
+
+        $pat = "|([A-Za-z0-9\(\)]+) ([A-Za-z0-9\(\)]+)|";
+        $missingstar = false;
+        if (preg_match($pat, $cmd)) {
+            $missingstar = true;
+            if ($insertstars === 3 || $insertstars === 4 || $insertstars === 5) {
+                $cmd = str_replace(' ', '*', $cmd);
+            } else {
+                $cmds = str_replace(' ', '<font color="red">_</font>', $this->strings_replace($cmd, $strings));
+                foreach (self::$spacepatterns as $key => $pat) {
+                    $cmds = str_replace($pat, $key, $cmds);
+                }
+                $this->add_error(stack_string('stackCas_spaces', array('expr' => stack_maxima_format_casstring($cmds))));
+                $this->valid = false;
+            }
+        }
+
+        if ($missingstar) {
+            $this->answernote[] = 'spaces';
+        }
+
+        foreach (self::$spacepatterns as $key => $pat) {
+            $cmd = str_replace($pat, $key, $cmd);
+        }
+
+        if ($insertstars === 3 || $insertstars === 4 || $insertstars === 5) {
+            $cmdn = $this->strings_replace($cmd, $strings);
+            $this->casstring = $cmdn;
+        }
+        return $cmd;
+    }
+
+    /**
      * Checks that there are no *s missing from expressions, eg 2x should be 2*x
      *
      * @return bool|string true if no missing *s, false if missing stars but automatically added
@@ -850,8 +901,7 @@ class stack_cas_casstring {
         $missingstring   = '';
 
         // Prevent ? characters calling LISP or the Maxima help file.  Instead, these pass through and are displayed as normal.
-        $cmd = str_replace('?', 'QMCHAR', $this->rawcasstring);
-
+        $cmd = str_replace('?', 'QMCHAR', $this->casstring);
         // Provide support for the grid2d command, which otherwise breaks insert stars.
         $cmd = str_replace('grid2d', 'STACKGRID', $cmd);
 
@@ -862,7 +912,7 @@ class stack_cas_casstring {
             if (preg_match($pat, $cmd)) {
                 // Found a missing star.
                 $missingstar = true;
-                if ($insertstars) {
+                if ($insertstars == 1 || $insertstars == 2 || $insertstars == 4 || $insertstars == 5) {
                     // Then we automatically add stars.
                     $cmd = preg_replace($pat, "\${1}*\${2}", $cmd);
                 } else {
@@ -882,7 +932,7 @@ class stack_cas_casstring {
         }
         // Guard clause above - we have missing stars detected.
         $this->answernote[] = 'missing_stars';
-        if ($insertstars) {
+        if ($insertstars == 1 || $insertstars == 2 || $insertstars == 4 || $insertstars == 5) {
             // If we are going to quietly insert them.
             $this->casstring = str_replace('QMCHAR', '?', $cmd);
             return true;

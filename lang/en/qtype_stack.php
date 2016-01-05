@@ -145,11 +145,14 @@ $string['inputtypematrix'] = 'Matrix';
 $string['inputtypeunits'] = 'Units';
 $string['inputwillberemoved'] = 'This input is no longer referred to in the question text. If you save the question now, the data about this input will be lost. Please confirm that you want to do this. Alternatively edit the question text to put back the \'[[input:{$a}]]\' and \'[[validation:{$a}]]\' placeholders.';
 $string['insertstars'] = 'Insert stars';
-$string['insertstars_help'] = 'If set to false then no stars will be inserted.  If set to yes then the system will automatically insert stars into any patterns identified by Strict Syntax.  If set to "single char vars" then we assume the answer has variable names consisting only of single letter variable names.  Other variable names will have stars inserted between the letters, e.g. ab->a*b';
+$string['insertstars_help'] = 'This option provides a number of different options for inserting stars where multiplication is implied.  Please read the more detailed documentation.';
 $string['insertstars_link'] = '%%WWWROOT%%/question/type/stack/doc/doc.php/Authoring/Inputs.md#Insert_Stars';
 $string['insertstarsno'] = 'Don\'t insert stars ';
-$string['insertstarsyes'] = 'Insert stars for implied multiplication';
+$string['insertstarsyes'] = 'Insert stars for spaces only';
 $string['insertstarsassumesinglechar'] = 'Insert stars assuming single-character variable names';
+$string['insertspaces'] = 'Insert multiplication for spaces';
+$string['insertstarsspaces'] = 'Insert stars for implied multiplication and for spaces';
+$string['insertstarsspacessinglechar'] = 'Insert stars assuming single-character variable names and for spaces';
 $string['multiplicationsign'] = 'Multiplication sign';
 $string['multiplicationsign_help'] = 'Controls how multiplication signs are displayed.';
 $string['multiplicationsign_link'] = '%%WWWROOT%%/question/type/stack/doc/doc.php/Authoring/Options.md#multiplication';
@@ -531,7 +534,7 @@ $string['texdisplaystyle'] = 'Display-style equation';
 $string['texinlinestyle'] = 'Inline-style equation';
 
 // Used in casstring.class.php.
-$string['stackCas_spaces']                  = 'Spaces found in expression {$a->expr}.';
+$string['stackCas_spaces']                  = 'Illegal spaces found in expression {$a->expr}.';
 $string['stackCas_percent']                 = '&#037; found in expression {$a->expr}.';
 $string['stackCas_missingLeftBracket']      = 'You have a missing left bracket <span class="stacksyntaxexample">{$a->bracket}</span> in the expression: {$a->cmd}.';
 $string['stackCas_missingRightBracket']     = 'You have a missing right bracket <span class="stacksyntaxexample">{$a->bracket}</span> in the expression: {$a->cmd}.';
