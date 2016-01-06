@@ -16,6 +16,8 @@ Numerous minor bug fixes and improvements.
 6. Added the dropdown input type.
 7. Added basic support for scientific [units](../Authoring/Units.md), including a new input type and science answer tests.
 8. Added support for `grid2d` in newer versions of Maxima only.
+9. Add a mechanism to allow spaces in inputs.  Trial functionality, which might change.
+
 
 ## Version 3.4
 

@@ -304,7 +304,7 @@ abstract class stack_input {
             $validationmethod = $this->get_validation_method();
 
             $singlevarchars = false;
-            if (2 == $this->get_parameter('insertStars', 0)) {
+            if (2 == $this->get_parameter('insertStars', 0) || 5 == $this->get_parameter('insertStars', 0)) {
                 $singlevarchars = true;
             }
 
