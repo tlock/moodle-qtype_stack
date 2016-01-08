@@ -141,7 +141,7 @@ class stack_dropdown_input extends stack_input {
         }
 
         $numbercorrect = 0;
-        $ddlvalues = array();
+        $ddlvalues = array(0 => array('value' => '', 'display' => stack_string('notanswered')));
         $correctanswer = array();
         $correctanswerdisplay = array();
         foreach ($values as $distractor) {
@@ -181,6 +181,12 @@ class stack_dropdown_input extends stack_input {
         $this->teacheranswerdisplay = '<code>'.'['.implode(',', $correctanswerdisplay).']'.'</code>';
 
         if ($this->ddldisplay === 'casstring') {
+
+            // We rely on the array keys to hold the value.
+            if ($this->ddlshuffle) {
+                shuffle($ddlvalues);
+            }
+
             // By default, we wrap displayed values in <code> tags.
             foreach ($ddlvalues as $key => $value) {
                 $ddlvalues[$key]['display'] = '<code>'.$ddlvalues[$key]['display'].'</code>';
@@ -222,6 +228,10 @@ class stack_dropdown_input extends stack_input {
                 $ddlvalues[$key]['display'] = '\('.$disp.'\)';
             }
         }
+        // We rely on the array keys to hold the value.
+        if ($this->ddlshuffle) {
+            shuffle($ddlvalues);
+        }
         $this->ddlvalues = $ddlvalues;
 
         return;
@@ -234,6 +244,14 @@ class stack_dropdown_input extends stack_input {
         return '';
     }
 
+    protected function validate_contents($contents, $forbiddenkeys) {
+       $valid = true;
+       $errors = '';
+       $modifiedcontents = $contents;
+
+       return array($valid, $errors, $modifiedcontents);
+    }
+
     /**
      * Transforms the contents array into a maxima list.
      *
@@ -241,15 +259,11 @@ class stack_dropdown_input extends stack_input {
      * @return string
      */
     public function contents_to_maxima($contents) {
-        return '['.implode(',', $contents).']';
-    }
-
-    /**
-     * Takes a Maxima list returns an array of values.
-     * @return array
-     */
-    private function maxima_to_array($in) {
-        return stack_utils::list_to_array($in, false);
+        $vals = array();
+        foreach ($contents as $key) {
+            $vals[] = $this->get_input_ddl_value($key);
+        }
+        return '['.implode(',', $vals).']';
     }
 
     /* This function always returns an array where the key is the CAS "value".
@@ -267,20 +281,12 @@ class stack_dropdown_input extends stack_input {
             return array();
         }
 
-        // We need to shuffle first becuase suffle changes the array keys.
-        // We rely on the array keys to hold the value.
-        if ($this->ddlshuffle) {
-            shuffle($values);
-        }
-
-        $values = array_merge(array(0 => array('value' => '', 'display' => stack_string('notanswered'))), $values);
-
         // We need to do this step after array_merge.
         // If the 'value' is an integer, array_merge may renumber it.
         $choices = array();
-        foreach ($values as $val) {
+        foreach ($values as $key => $val) {
             if (!array_key_exists($val['value'], $choices)) {
-                $choices[$val['value']] = $val['display'];
+                $choices[$key] = $val['display'];
             } else {
                 $this->ddlerrors .= stack_string('ddl_duplicates');
             }
@@ -313,16 +319,49 @@ class stack_dropdown_input extends stack_input {
         // HACK: in preparation for questions with more than one potential input.
         // Need to loop over the numbers here for each input.
         $selected = $state->contents;
-        $idx = 0;
-        $select = '';
-        if (array_key_exists($idx, $selected)) {
-            $select = $selected[$idx];
-        }
-        //$fieldname = $fieldname.'_sub_'.$idx;
+        $select = $selected[0];
+        $notanswered = $values[0];
+        unset($values[0]);
         $ret .= html_writer::select($values, $fieldname, $select,
-            array('' => stack_string('notanswered')), $attributes);
+            $notanswered, $attributes);
 
         return $ret;
+        /******************************************************/
+
+        $inputattributes = array(
+            'type' => 'radio', //$this->ddltype,
+            'name' => $fieldname,
+        );
+
+        if ($readonly) {
+            $inputattributes['disabled'] = 'disabled';
+        }
+
+        $selected = array_flip($state->contents);
+        $radiobuttons = array();
+        $classes = array();
+        foreach ($values as $key => $ansid) {
+            $inputattributes['name'] = $fieldname;
+            $inputattributes['value'] = $key;
+            $inputattributes['id'] = $fieldname.'_'.$key;
+            if (array_key_exists($key, $selected)) {
+                $inputattributes['checked'] = 'checked';
+            } else {
+                unset($inputattributes['checked']);
+            }
+            $radiobuttons[] = html_writer::empty_tag('input', $inputattributes) . html_writer::tag('label', $ansid);
+        }
+
+        $result = "\n";
+
+        $result .= html_writer::start_tag('div', array('class' => 'answer')) . "\n";
+        foreach ($radiobuttons as $key => $radio) {
+            $result .= html_writer::tag('div', $radio) . "\n";
+        }
+        $result .= html_writer::end_tag('div');
+
+        return $result;
+
     }
 
     /*
@@ -365,21 +404,21 @@ class stack_dropdown_input extends stack_input {
     /**
      * Transforms a Maxima expression into an array of raw inputs which are part of a response.
      * Most inputs are very simple, but textarea and matrix need more here.
-     *
+     *$key
      * @param array|string $in
      * @return string
      */
     public function maxima_to_response_array($in) {
-
-        $tc = $this->maxima_to_array($in);
+        $tc = stack_utils::list_to_array($in, false);
 
         foreach ($tc as $key => $val) {
-                $response[$this->name.'_sub_'.$key] = $val;
+                $ddlkey = $this->get_input_ddl_key($val);
+                $response[$this->name] = $ddlkey;
+                if ($this->requires_validation()) {
+                    //$response[$this->name . '_val'] = $ddlkey;
+                }
         }
 
-        if ($this->requires_validation()) {
-            $response[$this->name . '_val'] = $in;
-        }
         return $response;
 
     }
@@ -400,17 +439,29 @@ class stack_dropdown_input extends stack_input {
      * @access public
      */
     public function response_to_contents($response) {
-        // HACK, need to loop over all the possible values.
         $contents = array();
-        if (array_key_exists($this->name . '_sub_0', $response)) {
-            $contents[] = $response[$this->name . '_sub_0'];
-        }
-        // TODO Delete this!
         if (array_key_exists($this->name, $response)) {
-            $contents[] = $response[$this->name];
+            $contents[] = (int) $response[$this->name];
         }
-
         return $contents;
     }
 
+    private function get_input_ddl_value($key) {
+        $val = '';
+        if (array_key_exists($key, $this->ddlvalues)) {
+            $val = $this->ddlvalues[$key]['value'];
+        }
+        return $val;
+    }
+
+    private function get_input_ddl_key($value) {
+        foreach ($this->ddlvalues as $key => $val) {
+            if ($val['value'] == $value) {
+                return $key;
+            }
+        }
+        throw new stack_exception('stack_dropdown_input: could not find a key for '.$value);
+
+        return false;
+    }
 }
