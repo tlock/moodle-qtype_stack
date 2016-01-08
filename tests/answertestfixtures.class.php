@@ -182,6 +182,7 @@ class stack_answertest_test_data {
         array('AlgEquiv', '(x-sqrt(a))*(x+sqrt(a))=0', 'x^2=a', 1, '', ''),
         array('AlgEquiv', '(x-%i*sqrt(a))*(x+%i*sqrt(a))=0', 'x^2=-a', 1, '', ''),
         array('AlgEquiv', '(x-%i*sqrt(abs(a)))*(x+%i*sqrt(abs(a)))=0', 'x^2=-abs(a)', 1, '', ''),
+        array('AlgEquiv', 'sqrt(20+5*cos(x)^2)', 'sqrt(25-5*sin(x)^2)', 1, '', ''),
         array('AlgEquiv', 'y=sqrt(1-x^2)', 'x^2+y^2=1', 0, '', ''),
         array('AlgEquiv', '(y-sqrt(1-x^2))*(y+sqrt(1-x^2))=0', 'x^2+y^2=1', 1, '', ''),
         array('AlgEquiv', '(y-sqrt((1-x)*(1+x)))*(y+sqrt((1-x)*(1+x)))=0', 'x^2+y^2=1', 1, '', ''),
@@ -236,6 +237,8 @@ class stack_answertest_test_data {
         array('AlgEquiv', '-inf', 'minf', -2, '', ''),
         array('AlgEquiv', '(sqrt(108)+10)^(1/3)-(sqrt(108)-10)^(1/3)', '2', -2, '', ''), // Cardano's example!
         array('AlgEquiv', '(sqrt(2+sqrt(2))+sqrt(2-sqrt(2)))/(2*sqrt(2))', 'sqrt(sqrt(2)+2)/2', -2, '', ''),
+        array('AlgEquiv', 'sqrt(5)*sqrt(4+cos(x)^2)', 'sqrt(25-5*sin(x)^2)', -2, '', ''),
+        array('AlgEquiv', 'sqrt(5)*(4+cos(x)^2)', 'sqrt(25-5*sin(x)^2)', -2, '', ''),
         array('AlgEquiv', '((x+3)^2*(x+3))^(1/3)', '((x+3)*(x^2+6*x+9))^(1/3)', -2, '', 'Need to factor internally.'),
 
         // SubstEquiv Answer tests.
