@@ -207,6 +207,7 @@ class stack_cas_session {
 
                 if (array_key_exists('value', $result)) {
                     $val = str_replace('QMCHAR', '?', $result['value']);
+                    $val = str_replace('BSCHAR', '\\', $val);
                     $cs->set_value($val);
                     $gotvalue = true;
                 } else {
@@ -216,6 +217,7 @@ class stack_cas_session {
                 if (array_key_exists('display', $result)) {
                     // Need to add this in here also because strings may contain question mark characters.
                     $disp = str_replace('QMCHAR', '?', $result['display']);
+                    $disp = str_replace('BSCHAR', '\\', $disp);
                     $cs->set_display($disp);
                 }
 
@@ -477,6 +479,7 @@ class stack_cas_session {
 
             // Replace any ?'s with a safe value.
             $cmd = str_replace('?', 'QMCHAR', $cs->get_casstring());
+            $cmd = str_replace('\\', 'BSCHAR', $cmd);
             // Strip off any []s at the end of a variable name.
             // These are used to assign elements of lists and matrices, but this breaks Maxima's block command.
             if (false === strpos($label, '[')) {

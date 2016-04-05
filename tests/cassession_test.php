@@ -509,4 +509,16 @@ class stack_cas_session_test extends qtype_stack_testcase {
         $this->assertRegExp('/Division by (zero|0)/', trim($at1->get_errors_key('p')));
         $this->assertFalse(strpos($at1->get_value_key('p'), 'STACK auto-generated plot of 0 with parameters'));
     }
+
+    public function test_slash_strings() {
+        $cs = array('a:"\\(\\chi^2\\)-distribution"');
+        foreach ($cs as $s) {
+            $cs = new stack_cas_casstring($s);
+            $cs->get_valid('t');
+            $s1[] = $cs;
+        }
+        $at1 = new stack_cas_session($s1, null, 0);
+        $at1->instantiate();
+        $this->assertEquals("\"\\(\\chi^2\\)-distribution\"", $at1->get_value_key('a'));
+    }
 }
