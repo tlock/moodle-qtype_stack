@@ -106,6 +106,7 @@ foreach ($testscases as $key => $testcase) {
 
 // Start output.
 echo $OUTPUT->header();
+$renderer = $PAGE->get_renderer('qtype_stack');
 
 $deployfeedback = optional_param('deployfeedback', null, PARAM_TEXT);
 if (!is_null($deployfeedback)) {
@@ -304,6 +305,7 @@ foreach ($testresults as $key => $result) {
     );
     $prtstable->attributes['class'] = 'generaltable stacktestsuite';
 
+    $debuginfo = '';
     foreach ($result->get_prt_states() as $prtname => $state) {
         if ($state->testoutcome) {
             $prtstable->rowclasses[] = 'pass';
@@ -333,12 +335,18 @@ foreach ($testresults as $key => $result) {
                 $expectedpenalty,
                 s($state->answernote),
                 s($state->expectedanswernote),
-                $state->feedback,
+                format_text($state->feedback),
                 $passedcol,
         );
+        if ($state->debuginfo != '') {
+            $debuginfo .= "\n<h2>".$prtname."</h2>\n\n";
+            $debuginfo .= $state->debuginfo;
+        }
     }
 
     echo html_writer::table($prtstable);
+
+    echo $debuginfo;
 
     if ($canedit) {
         echo html_writer::start_tag('div', array('class' => 'testcasebuttons'));
@@ -354,7 +362,6 @@ foreach ($testresults as $key => $result) {
 }
 
 // Display the question.
-$renderer = $PAGE->get_renderer('qtype_stack');
 echo $OUTPUT->heading(stack_string('questionpreview'), 3);
 
 echo html_writer::tag('p', html_writer::link($questionbanklink,

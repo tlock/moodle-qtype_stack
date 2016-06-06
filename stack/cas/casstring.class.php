@@ -462,7 +462,7 @@ class stack_cas_casstring {
                 'var_hypergeometric' => true, 'var_laplace' => true, 'var_logistic' => true, 'var_lognormal' => true,
                 'var_negative_binomial' => true, 'var_noncentral_chi2' => true, 'var_noncentral_student_t' => true,
                 'var_normal' => true, 'var_pareto' => true, 'var_poisson' => true, 'var_rayleigh' => true,
-                'var_student_t' => true, 'var_weibull' => true);
+                'var_student_t' => true, 'var_weibull' => true, 'null' => true);
 
     /**
      * These lists are used by question authors for groups of words.
@@ -491,14 +491,18 @@ class stack_cas_casstring {
      * @var all the characters permitted in responses.
      * Note, these are used in regular expression ranges, so - must be at the end, and ^ may not be first.
      */
+    // @codingStandardsIgnoreStart
     private static $allowedchars =
             '0123456789,./\%&{}[]()$£@!"\'?`^~*_+qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM;:=><|: -';
+    // @codingStandardsIgnoreEnd
 
     /**
      * @var all the permitted which are not allowed to be the final character.
      * Note, these are used in regular expression ranges, so - must be at the end, and ^ may not be first.
      */
+    // @codingStandardsIgnoreStart
     private static $disallowedfinalchars = '/+*^£#~=,_&`¬;:$-';
+    // @codingStandardsIgnoreEnd
 
     /**
      * @var all the permitted patterns in which spaces occur.  Simple find and replace.
@@ -1132,7 +1136,7 @@ class stack_cas_casstring {
     }
 
     /**
-     * Check for CAS commands which appear in the $keywords array, which are not just single variables
+     * Check for CAS commands which appear in the $keywords array, which are not just single letter variables.
      * Notes, (i)  this is case insensitive.
      *        (ii) returns true if we find the element of the array.
      * @return bool|string true if an element of array is found in the casstring.
@@ -1193,15 +1197,14 @@ class stack_cas_casstring {
         // Replace lists of keywords with their actual values.
         $kws = array();
         foreach ($keywords as $val) {
-            $kw = trim(strtolower($val));
+            $val = trim($val);
+            $kw = strtolower($val);
             if (array_key_exists($kw, self::$keywordlists)) {
                 $kws = array_merge($kws, self::$keywordlists[$kw]);
-            } else {
-                if ('COMMA_TAG' === $val) {
-                    $kws[] = ',';
-                } else {
-                    $kws[] = trim($val);  // This test is case sensitive, but ignores surrounding whitespace.
-                }
+            } else if ('COMMA_TAG' === $val) {
+                $kws[] = ',';
+            } else if ($val !== '') {
+                $kws[] = $val;
             }
         }
 

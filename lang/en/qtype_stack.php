@@ -222,7 +222,9 @@ $string['questionsimplify'] = 'Question-level simplify';
 $string['questionsimplify_help'] = 'Sets the global variable "simp" within Maxima for the whole question.';
 $string['questionsimplify_link'] = '%%WWWROOT%%/question/type/stack/doc/doc.php/CAS/Maxima.md#Simplification';
 $string['questiontext'] = 'Question text';
+// @codingStandardsIgnoreStart
 $string['questiontext_help'] = 'The question text is CASText.  This is the "question" which the student actually sees.  You must put input elements, and the validation strings, in this field, and only in this field.  For example, using `[[input:ans1]] [[validation:ans1]]`.';
+// @codingStandardsIgnoreEnd
 $string['questiontext_link'] = '%%WWWROOT%%/question/type/stack/doc/doc.php/Authoring/CASText.md#question_text';
 $string['questiontextnonempty'] = 'The question text must be non-empty.';
 $string['questiontextmustcontain'] = 'The question text must contain the token \'{$a}\'.';
@@ -336,7 +338,8 @@ $string['settingdefaultquestionoptions_desc'] = 'Used when creating a new questi
 $string['settingmathsdisplay'] = 'Maths filter';
 $string['settingmathsdisplay_mathjax'] = 'MathJax';
 $string['settingmathsdisplay_tex'] = 'Moodle TeX filter';
-$string['settingmathsdisplay_maths'] = 'OU maths filter';
+$string['settingmathsdisplay_maths'] = 'Old OU maths filter';
+$string['settingmathsdisplay_oumaths'] = 'New OU maths filter';
 $string['settingmathsdisplay_desc'] = 'The method used to display maths. If you select MathJax, then you will need to follow the instructions on the Healthcheck page to set it up. If you select a filter, then you must ensure that filter is enabled on the Manage filters configuration page.';
 $string['settingsmathsdisplayheading'] = 'Maths display options';
 $string['settingsmaximasettings'] = 'Connecting to Maxima';
@@ -356,7 +359,7 @@ $string['settingserveruserpass'] = 'Server username:password';
 $string['settingserveruserpass_desc'] = 'If you are using Platform type: Server, and if you have set up your Maxima pool server with HTTP authentication, then you can put the username and password here. That is slighly safer than putting them in the URL. The format is username:password.';
 $string['settingusefullinks'] = 'Useful links';
 $string['settingmaximalibraries'] = 'Load optional Maxima libraries:';
-$string['settingmaximalibraries_desc'] = 'This is a comma separated list of Maxima library names which will be automatically loaded into Maxima.  Only supported library names can be used: see the documentation for supported library names.';
+$string['settingmaximalibraries_desc'] = 'This is a comma separated list of Maxima library names which will be automatically loaded into Maxima.  Only supported library names can be used: see the documentation for supported library names. These libraries will not be loaded if you have saved a maxima image to optimise performance.';
 $string['settingmaximalibraries_error'] = 'The following package is not supported: {$a}';
 $string['settingmaximalibraries_failed'] = 'It appears as if some of the Maxima packages you have asked for have failed to load.  Please refer to the installation instructions for notes about this error.';
 
@@ -460,7 +463,7 @@ $string['healthcheckconnectintro'] = 'We are trying to evaluate the following CA
 $string['healthcheckfilters'] = 'Please ensure that the {$a->filter} is enabled on the <a href="{$a->url}">Manage filters</a> page.';
 $string['healthchecklatex'] = 'Check LaTeX is being converted correctly';
 $string['healthchecklatexintro'] = 'STACK generates LaTeX on the fly, and enables teachers to write LaTeX in questions. It assumes that LaTeX will be converted by a moodle filter.  Below are samples of displayed and inline expressions in LaTeX which should be appear correctly in your browser.  Problems here indicate incorrect moodle filter settings, not faults with STACK itself. STACK only uses the single and double dollar notation itself, but some question authors may be relying on the other forms.';
-$string['healthchecklatexmathjax'] = 'One way to get equation rendering to work is to copy the following code into the <b>Within HEAD</b> setting on <a href="{$a}">Additional HTML</a>.';
+$string['healthchecklatexmathjax'] = 'STACK relies on the Moodle MathJax filter.  An alternative is to add javascript code to Moodle\'s additional HTML.  See the STACK installation docs for more details of this option.';
 $string['healthcheckmathsdisplaymethod'] = 'Maths display method being used: {$a}.';
 $string['healthcheckmaximabat'] = 'The maxima.bat file is missing';
 $string['healthcheckmaximabatinfo'] = 'This script tried to automatically copy the maxima.bat script from inside "C:\Program files\Maxima-1.xx.y\bin" into "{$a}\stack". However, this seems not to have worked. Please copy this file manually.';
@@ -590,7 +593,9 @@ $string['Maxima_DivisionZero']  = 'Division by zero.';
 $string['Lowest_Terms']   = 'Your answer contains fractions that are not written in lowest terms.  Please cancel factors and try again.';
 $string['Illegal_floats'] = 'Your answer contains floating point numbers, that are not allowed in this question.  You need to type in numbers as fractions.  For example, you should type 1/3 not 0.3333, which is after all only an approximation to one third.';
 $string['qm_error'] = 'Your answer contains question mark characters, ?, which are not permitted in answers.  You should replace these with a specific value.';
+// @codingStandardsIgnoreStart
 // TODO add this to STACK: $string['CommaError']     = 'Your answer contains commas which are not part of a list, set or matrix.  <ul><li>If you meant to type in a list, please use <tt>{$a[0]}</tt>,</li><li>If you meant to type in a set, please use <tt>{$a[1]}</tt>.</li></ul>';
+// @codingStandardsIgnoreEnd
 
 // Answer tests.
 $string['stackOptions_AnsTest_values_AlgEquiv']           = "AlgEquiv";
@@ -756,6 +761,7 @@ $string['stackDoc_parent']              = 'Parent';
 $string['stackDoc_siteMap']             = 'Site map';
 $string['stackDoc_404message']          = 'File not found.';
 $string['stackDoc_directoryStructure']  = 'Directory structure';
+$string['stackDoc_version']             = 'Your site is running STACK version {$a}.';
 
 
 // Fact sheets.

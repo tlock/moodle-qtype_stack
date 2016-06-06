@@ -328,6 +328,8 @@ class stack_answertest_general_cas_test extends qtype_stack_testcase {
         $this->assertEquals(0, $at->get_at_mark());
     }
 
+    // @codingStandardsIgnoreStart
+
     // Goal:  Have maxima generate a string which will work in the moodle
     // translation system. For example, the student has been asked to integrate
     // x^5 wrt x, and has answered x^6, not x^6/6.
@@ -356,6 +358,7 @@ class stack_answertest_general_cas_test extends qtype_stack_testcase {
     //
     // This needs to be converted into something which can be translated by Moodle.
     // This is the role of stack_maxima_translate in locallib.php.
+    // @codingStandardsIgnoreEND
     public function test_stack_maxima_translate_int() {
         $at = new stack_answertest_general_cas('x^6', 'x^6/6', 'ATInt', true, 'x', null, true, true);
         $this->assertFalse($at->do_test());
@@ -368,7 +371,7 @@ class stack_answertest_general_cas_test extends qtype_stack_testcase {
                 'that you were asked to integrate, that was: \[x^5\]  In fact, ' .
                 'the derivative of your answer, with respect to \(x\) is: ' .
                 '\[6\cdot x^5\] so you must have done something wrong!';
-        $this->assertEquals($fbt, stack_maxima_translate($at->get_at_feedback()));
+        $this->assertContentWithMathsEquals($fbt, stack_maxima_translate($at->get_at_feedback()));
     }
 
     public function test_stack_maxima_translate_algequiv_list() {
@@ -383,7 +386,7 @@ class stack_answertest_general_cas_test extends qtype_stack_testcase {
 
         $fbt = 'The entries underlined in red below are those that are incorrect. ' .
                 '\[\left[ x^2 , {\color{red}{\underline{x^2}}} , x^4 \right] \]';
-        $this->assertEquals($fbt, stack_maxima_translate($at->get_at_feedback()));
+        $this->assertContentWithMathsEquals($fbt, stack_maxima_translate($at->get_at_feedback()));
     }
 
     public function test_stack_maxima_translate_algequiv_matrix() {
@@ -399,7 +402,7 @@ class stack_answertest_general_cas_test extends qtype_stack_testcase {
 
         $fbt = 'The entries underlined in red below are those that are incorrect. ' .
                 '\[ \left[\begin{array}{cc} 1 & 2 \\\\ {\color{red}{\underline{2}}} & 4 \end{array}\right]\]';
-        $this->assertEquals($fbt, stack_maxima_translate($at->get_at_feedback()));
+        $this->assertContentWithMathsEquals($fbt, stack_maxima_translate($at->get_at_feedback()));
     }
 
     public function test_stack_maxima_int_feedback_1() {
@@ -418,7 +421,7 @@ class stack_answertest_general_cas_test extends qtype_stack_testcase {
                'In fact, the derivative of your answer, with respect to \(x\) is: '.
                '\[5\cdot e^{5\cdot x+7}+5\cdot \left(5\cdot e^7\cdot x-e^7\right) \cdot e^{5\cdot x}\] '.
                'so you must have done something wrong!';
-        $this->assertEquals($fbt, stack_maxima_translate($at->get_at_feedback()));
+        $this->assertContentWithMathsEquals($fbt, stack_maxima_translate($at->get_at_feedback()));
     }
 
     public function test_stack_maxima_int_feedback_2() {
@@ -435,7 +438,7 @@ class stack_answertest_general_cas_test extends qtype_stack_testcase {
                '\[x\cdot e^{5\cdot x+7}\]  In fact, the derivative of your answer, with respect to \(x\) is: '.
                '\[5\cdot e^{5\cdot x+7}+5\cdot \left(5\cdot e^7\cdot x-e^7\right) \cdot e^{5\cdot x}\] '.
                'so you must have done something wrong!';
-        $this->assertEquals($fbt, stack_maxima_translate($at->get_at_feedback()));
+        $this->assertContentWithMathsEquals($fbt, stack_maxima_translate($at->get_at_feedback()));
     }
 
     public function test_is_true_numsigfigs() {

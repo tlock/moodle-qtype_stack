@@ -2,15 +2,24 @@
 
 For current and future plans, see [Development track](Development_track.md) and [Future plans](Future_plans.md).
 
+## Version 3.6
+
+Unreleased, currently in the master branch.
+
+Numerous minor bug fixes and improvements.
+
+1. Expose functionality of `printf` to better control the display of integers and floats.
+
 ## Version 3.5
 
-Unreleased in this branch.
+Released February 2016. 
 
 Numerous minor bug fixes and improvements.
 
 1. Added an export mechanism for single stack questions throught a link on the "Question tests & deployed versions" page.
 2. Modify the text area input so that each line is validated separately.
 3. Support for plot2d "label" command.
+<<<<<<< HEAD
 4. Add the NOCONST option to the ATInt answertest.
 5. Added support for optional Maxima packages throught the config settings.
 6. Added the dropdown input type.
@@ -18,6 +27,13 @@ Numerous minor bug fixes and improvements.
 8. Added support for `grid2d` in newer versions of Maxima only.
 9. Add a mechanism to allow spaces in inputs.  Trial functionality, which might change.
 
+=======
+4. Added support for `grid2d` for plot in newer versions of Maxima only.
+5. Add the `NOCONST` option to the ATInt answertest.
+6. Added support for optional Maxima packages throught the config settings.
+7. Added the dropdown, radio and checkbox input types.
+8. Added basic support for scientific [units](../Authoring/Units.md), including a new input type and science answer tests.
+>>>>>>> master
 
 ## Version 3.4
 

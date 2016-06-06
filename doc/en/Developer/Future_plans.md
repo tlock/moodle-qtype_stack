@@ -2,40 +2,17 @@
 
 How to report bugs and make suggestions is described on the [community](../About/Community.md) page.
 
-## Features to add for STACK 3.5 ##
+Note, where the feature is listed as "(done)" means we have prototype code in the testing phase.
 
-Goal: release end of Jan 2016.
+## Features to add for STACK 3.6 or later ##
 
 ### Units Inputs ###
 
-* Accept spaces in inputs as implied multiplication?
 * Convestion from Celsius to Kelvin?  What units to choose for degrees Celsius which don't conflict with Coulomb?
 * Support for United States customary units?
 * Add an option to validation to require compatible units with the teacher's answer, not just some units.
 * Create a mechanism to distinguish between `m/s` and `m*s^-1`, both at validation and answer test levels.
 * Create a mechanism to distinguish between `m/s/s` and `m/s^2`, both at validation and answer test levels.
-* (done) An answer test which does not check for equivalence with equivalent units.
-
-
-### MCQ Inputs ###
-
-* Refactor to separate classes for radio and checkboxes.
-* Enable the input to deal with multiple submissions, e.g. checkboxes.  See the Matrix type for ideas here.
-* Correctly render radio
-* Correctly render checkboxes
-* Check if the display type is a string. If so, strip off the "s and don't sent it through the CAS.
-
-For the future?
-
-* Refactor shuffle to be seeded from the question usage?
-* Add choose N (correct) from M feature (used at Aalto).
-* Have a "none of these" which degrates to an algebraic input
-* Enable better support for text-based strings in the display (e.g. CASTex?!)
-
-
-## Features to add ##
-
-Note, where the feature is listed as "(done)" means we have prototype code in the testing phase.
 
 ### Inputs ###
 
@@ -47,6 +24,10 @@ Note, where the feature is listed as "(done)" means we have prototype code in th
  3. Sliders.
  4. Geogebra input.
 * It is very useful to be able to embed input elements in equations, and this was working in STACK 2.0. However is it possible with MathJax or other Moodle maths filters?
+  This might offer one option:  http://stackoverflow.com/questions/23818478/html-input-field-within-a-mathjax-tex-equation
+* In the MCQ input type: Add choose N (correct) from M feature (used at Aalto).
+* A new MCQ input type with a "none of these" option which uses Javascript to degrade to an algebraic input.
+
 
 ### Improve the editing form ###
 
@@ -58,6 +39,7 @@ Note, where the feature is listed as "(done)" means we have prototype code in th
 
 * Document ways of using JSXGraph  `http://jsxgraph.org` for better support of graphics.
 * Better options for automatically generated plots.  (Aalto use of tikzpicture?)  (Draw package?)
+* Implement "Banker's rounding" option which applies over a whole question, and for all answer tests.
 * Implement "CommaError" checking for CAS strings.  Make comma an option for the decimal separator.
 * Implement "BracketError" option for inputs.  This allows the student's answer to have only those types of parentheses which occur in the teacher's answer.  Types are `(`,`[` and `{`.  So, if a teacher's answer doesn't have any `{` then a student's answer with any `{` or `}` will be invalid.
 * Enable individual questions to load Maxima libraries.
@@ -82,6 +64,7 @@ Note, where the feature is listed as "(done)" means we have prototype code in th
   * AIM
   * WebWork, including the Open Problem Library:  http://webwork.maa.org/wiki/Open_Problem_Library
   * MapleTA
+  * Wiris
 * Possible Maxima packages:
  * Better support for rational expressions, in particular really firm up the PartFrac and SingleFrac functions with better support.
  * Support for inequalities.  This includes real intervals and sets of real numbers.
@@ -100,6 +83,8 @@ Note, where the feature is listed as "(done)" means we have prototype code in th
 To implement the decinal places test we need an "ephemiral form" for representing numbers at a syntactic level.   This test probably needs to operate at the PHP level on strings, rather then through Maxima.  
 
 Note that in Maxima the `floor()` function gives `floor(0.1667*10^4)` as `1666` not `1667` as expected.  So use `floor(0.1667*10^4)` instead.
+
+Add in support for `printf` to better format numbers.
 
 
 ## STACK custom reports
